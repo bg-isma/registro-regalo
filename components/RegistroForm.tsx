@@ -68,20 +68,10 @@ const TIPOS = [
   { id: "Mirada", texto: "Una carta para leer un lugar al llegar." },
 ];
 
-function camposCompletos(form: HTMLFormElement) {
+function camposRellenos(form: HTMLFormElement) {
   const data = new FormData(form);
-  const nombre = String(data.get("nombre") || "").trim();
-  const calle = String(data.get("calle") || "").trim();
-  const cp = String(data.get("codigoPostal") || "").trim();
-  const provincia = String(data.get("provincia") || "").trim();
-  const correo = String(data.get("email") || "").trim();
-  return (
-    nombre.length >= 5 &&
-    nombre.includes(" ") &&
-    calle.length >= 5 &&
-    /^\d{5}$/.test(cp) &&
-    provincia.length >= 2 &&
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)
+  return ["nombre", "calle", "codigoPostal", "provincia", "email"].every(
+    (campo) => String(data.get(campo) || "").trim().length > 0,
   );
 }
 
@@ -106,7 +96,7 @@ export function RegistroForm() {
     const provincia = String(data.get("provincia") || "").trim();
     const correo = String(data.get("email") || "").trim();
     const cp = String(data.get("codigoPostal") || "").trim();
-    setCampos(camposCompletos(form));
+    setCampos(camposRellenos(form));
     setErrores({
       nombre:
         nombre.length > 0 && (nombre.length < 5 || !nombre.includes(" "))
