@@ -7,28 +7,28 @@ export function Carta() {
         role="img"
         aria-label="Carta de papel con un sello de lacre"
       >
-        <rect x="86" y="64" width="348" height="456" fill="#e4d8c6" />
+        <rect x="86" y="64" width="348" height="456" fill="#e7e2d6" />
         <rect
           x="68"
           y="46"
           width="348"
           height="456"
-          fill="#f7f1e6"
-          stroke="#1c1916"
+          fill="#f7f4ee"
+          stroke="#2a2926"
           strokeWidth="1.4"
         />
-        <path d="M332 46 L416 130 L332 130 Z" fill="#efe3d0" stroke="#1c1916" strokeWidth="1.4" />
-        <path d="M332 46 L416 130" stroke="#1c1916" strokeWidth="1.4" />
+        <path d="M332 46 L416 130 L332 130 Z" fill="#efe9da" stroke="#2a2926" strokeWidth="1.4" />
+        <path d="M332 46 L416 130" stroke="#2a2926" strokeWidth="1.4" />
         <text
           x="96"
           y="92"
-          fill="#8e2f2b"
-          fontFamily="var(--font-fraunces), Georgia, serif"
+          fill="#3d8b99"
+          fontFamily="var(--font-display-face), sans-serif"
           fontSize="18"
         >
           01
         </text>
-        <g stroke="#c9bba8" strokeWidth="1.2" fill="none">
+        <g stroke="#d5d0c6" strokeWidth="1.2" fill="none">
           <path d="M100 168 H300" />
           <path d="M100 196 H340" />
           <path d="M100 224 H318" />
@@ -36,14 +36,14 @@ export function Carta() {
           <path d="M100 280 H332" />
           <path d="M100 308 H250" />
         </g>
-        <circle cx="292" cy="400" r="52" fill="#8e2f2b" />
-        <circle cx="292" cy="400" r="38" fill="none" stroke="#f4e7d4" strokeWidth="1.15" />
+        <circle cx="292" cy="400" r="52" fill="#e6b423" />
+        <circle cx="292" cy="400" r="38" fill="none" stroke="#2a2926" strokeWidth="1.15" />
         <text
           x="292"
           y="414"
           textAnchor="middle"
-          fill="#f6efe4"
-          fontFamily="var(--font-fraunces), Georgia, serif"
+          fill="#2a2926"
+          fontFamily="var(--font-display-face), sans-serif"
           fontSize="46"
         >
           S

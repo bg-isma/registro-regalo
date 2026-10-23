@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 type Codigo =
@@ -39,7 +40,7 @@ declare global {
 }
 
 const textos: Record<Codigo, string> = {
-  ok: "Registro hecho. Te escribiremos a este email con el regalo.",
+  ok: "Registro hecho. Te escribiremos a este email con el conocimiento.",
   sent: "Te hemos enviado un código. Revisa la bandeja y el spam.",
   duplicate: "Este email ya está registrado.",
   invalid: "Revisa el nombre, el email y la casilla de aceptación.",
@@ -54,10 +55,10 @@ const textos: Record<Codigo, string> = {
 };
 
 const campo =
-  "mt-2 w-full border-0 border-b border-ink/25 bg-transparent py-3 text-lg text-ink outline-none transition-colors placeholder:text-ink/30 focus:border-wax";
+  "mt-2 w-full border-0 border-b border-line bg-transparent py-3 text-base text-ink outline-none transition-colors placeholder:text-ink/30 focus:border-ink";
 
 const boton =
-  "mt-8 bg-wax px-7 py-3.5 text-sm tracking-wide text-paper transition-colors hover:bg-wax-deep disabled:cursor-wait disabled:opacity-60";
+  "mt-8 bg-ink px-7 py-3.5 text-[0.68rem] uppercase tracking-[0.18em] text-cream transition-colors hover:bg-[var(--yellow)] hover:text-ink disabled:cursor-wait disabled:opacity-60";
 
 const SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
 
@@ -213,7 +214,7 @@ export function RegistroForm() {
     }
   }
 
-  const color = tono === "error" ? "text-wax" : "text-ink";
+  const color = tono === "error" ? "text-orange" : "text-ink";
 
   return (
     <>
@@ -291,14 +292,16 @@ export function RegistroForm() {
       </label>
 
       <label className="mt-7 flex items-start gap-3 text-sm leading-relaxed text-ink">
-        <input className="mt-1 size-4 accent-wax" name="acepta" type="checkbox" required />
-        <span>Acepto recibir el código y el regalo en este email.</span>
+        <input className="mt-1 size-4 accent-ink" name="acepta" type="checkbox" required />
+        <span>
+          He leído la <Link className="underline" href="/privacidad">política de privacidad</Link> y acepto recibir el código y el conocimiento en este email.
+        </span>
       </label>
 
       {SITE_KEY ? (
         <div className="mt-7 min-h-[78px]" ref={caja} />
       ) : (
-        <p className="mt-7 text-sm leading-relaxed text-wax">
+        <p className="mt-7 text-sm leading-relaxed text-orange">
           Falta la clave de sitio de reCAPTCHA. Pégala en .env.local.
         </p>
       )}
