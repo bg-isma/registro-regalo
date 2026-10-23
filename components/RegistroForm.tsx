@@ -58,7 +58,7 @@ const campo =
   "mt-2 w-full border-0 border-b border-line bg-transparent py-3 text-base text-ink outline-none transition-colors placeholder:text-ink/30 focus:border-ink";
 
 const boton =
-  "order-3 mt-8 bg-ink px-7 py-3.5 text-[0.68rem] uppercase tracking-[0.18em] text-cream transition-colors hover:bg-[var(--yellow)] hover:text-ink disabled:cursor-wait disabled:opacity-60 lg:col-span-7 lg:col-start-1 lg:justify-self-start";
+  "order-3 mt-5 bg-ink px-7 py-3.5 text-[0.68rem] uppercase tracking-[0.18em] text-cream transition-colors hover:bg-[var(--yellow)] hover:text-ink disabled:cursor-wait disabled:opacity-60 lg:col-span-7 lg:col-start-1 lg:justify-self-start";
 
 const enColumna = "order-3 lg:col-span-7 lg:col-start-1";
 
@@ -273,7 +273,7 @@ export function RegistroForm() {
   return (
     <>
       <form
-        className={`${enColumna} mt-8 max-w-md`}
+        className={`${enColumna} mt-5 max-w-md`}
         hidden={paso !== "codigo"}
         onSubmit={onConfirmar}
       >
@@ -321,7 +321,7 @@ export function RegistroForm() {
         onChange={(event) => revisar(event.currentTarget)}
         onSubmit={onSolicitar}
       >
-      <fieldset className={`${enColumna} mt-8`}>
+      <fieldset className={`${enColumna} mt-5`}>
         <legend className="mb-3 text-[0.72rem] uppercase tracking-[0.18em] text-muted">
           Elige un conocimiento
         </legend>
@@ -345,7 +345,7 @@ export function RegistroForm() {
         })}
         </div>
       </fieldset>
-      <label className={`${enColumna} mt-12 block`}>
+      <label className={`${enColumna} mt-6 block`}>
         <span className="text-[0.72rem] uppercase tracking-[0.18em] text-muted">Nombre y apellidos</span>
         <input
           className={campo}
@@ -360,7 +360,7 @@ export function RegistroForm() {
         {errores.nombre ? <p className="mt-2 text-xs leading-relaxed text-orange">{errores.nombre}</p> : null}
       </label>
 
-      <label className={`${enColumna} mt-6 block`}>
+      <label className={`${enColumna} mt-4 block`}>
         <span className="text-[0.72rem] uppercase tracking-[0.18em] text-muted">Calle</span>
         <input
           className={campo}
@@ -374,7 +374,7 @@ export function RegistroForm() {
         />
       </label>
 
-      <div className={`${enColumna} mt-6 grid gap-6 sm:grid-cols-2`}>
+      <div className={`${enColumna} mt-4 grid gap-4 sm:grid-cols-2`}>
         <label className="block">
           <span className="text-[0.72rem] uppercase tracking-[0.18em] text-muted">Código postal</span>
           <input
@@ -409,7 +409,7 @@ export function RegistroForm() {
         </label>
       </div>
 
-      <label className={`${enColumna} mt-6 block`}>
+      <label className={`${enColumna} mt-4 block`}>
         <span className="text-[0.72rem] uppercase tracking-[0.18em] text-muted">Email</span>
         <input
           className={campo}
@@ -423,7 +423,7 @@ export function RegistroForm() {
         {errores.email ? <p className="mt-2 text-xs leading-relaxed text-orange">{errores.email}</p> : null}
       </label>
 
-      <div className="order-3 mt-7 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between lg:col-span-12 lg:col-start-1">
+      <div className="order-3 mt-5 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between lg:col-span-12 lg:col-start-1">
         <label className="flex max-w-sm items-start gap-3 text-sm leading-relaxed text-ink">
           <input className="mt-1 size-4 shrink-0 accent-ink" name="acepta" type="checkbox" required />
           <span>
