@@ -49,10 +49,6 @@ export function Carta() {
           S
         </text>
       </svg>
-      <figcaption className="mt-3 flex flex-col items-center gap-1 text-center text-[0.68rem] uppercase tracking-[0.18em] text-muted sm:flex-row sm:items-baseline sm:justify-between sm:text-left sm:text-[0.72rem] sm:tracking-[0.22em]">
-        <span>Muestra</span>
-        <span>Papel y lacre</span>
-      </figcaption>
     </figure>
   );
 }

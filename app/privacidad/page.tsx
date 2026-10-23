@@ -15,32 +15,32 @@ const bloques = [
   {
     titulo: "2. Datos que se recogen",
     texto:
-      "Nombre, email y la casilla de aceptación. También se guardan la fecha del registro y, de forma temporal, un código de seis cifras para comprobar que el buzón es tuyo. No se pide dirección postal, teléfono ni documento de identidad.",
+      "Nombre y apellidos, email, calle, código postal, provincia y la casilla de aceptación. También se guardan la fecha del registro y, de forma temporal, un código de seis cifras para comprobar que el buzón es tuyo. No se pide teléfono ni documento de identidad.",
   },
   {
     titulo: "3. Para qué se usan",
     texto:
-      "Para enviarte el código de comprobación y, si lo confirmas, el conocimiento que pediste. La hoja sirve para no escribir dos veces a la misma persona y para anotar cuándo se envió. No se usa para publicidad ni para ceder la lista a terceros con ese fin.",
+      "El email sirve para enviarte el código de comprobación. El nombre y la dirección sirven para enviarte el conocimiento por correo postal a tu casa, si confirmas el código. La hoja sirve para no enviar dos veces a la misma persona y para anotar cuándo salió el envío. No se usa para publicidad ni para ceder la lista con ese fin.",
   },
   {
     titulo: "4. Por qué es lícito",
     texto:
-      "Porque tú solicitas el envío. La casilla deja constancia de que aceptas recibir el código y el conocimiento en ese email.",
+      "Porque tú solicitas el envío. La casilla deja constancia de que aceptas recibir el código en ese email y el conocimiento en esa dirección.",
   },
   {
     titulo: "5. Qué es obligatorio",
     texto:
-      "El nombre, el email y la casilla. Sin ellos no se puede comprobar el buzón ni hacer el envío. El resto de la web se puede ver sin registrarse.",
+      "El nombre y los apellidos, la calle, el código postal, la provincia, el email y la casilla. Sin ellos no se puede comprobar el buzón ni enviar el conocimiento a casa. El resto de la web se puede ver sin registrarse.",
   },
   {
     titulo: "6. Cuánto tiempo se conservan",
     texto:
-      "El código de comprobación caduca a los 30 minutos y se borra al confirmar o al caducar. El nombre y el email se conservan el tiempo necesario para hacer el envío y revisar que no se repita, como máximo 12 meses desde el registro, salvo que pidas el borrado antes.",
+      "El código de comprobación caduca a los 30 minutos y se borra al confirmar o al caducar. El nombre, el email y la dirección se conservan el tiempo necesario para hacer el envío postal y revisar que no se repita, como máximo 12 meses desde el registro, salvo que pidas el borrado antes.",
   },
   {
     titulo: "7. Quién más interviene",
     texto:
-      "Los datos se guardan en una hoja de Google y el código se envía por el correo de la cuenta que administra el ejemplo. La casilla «No soy un robot» la presta Google reCAPTCHA. Esos proveedores tratan los datos para prestar ese servicio. La hoja no es pública.",
+      "Los datos se guardan en una hoja de Google. El código se envía por el correo de la cuenta que administra el ejemplo. El conocimiento se manda por correo postal a la dirección que indicaste; quien lo lleva es el servicio de correos que uses para ese envío. La casilla «No soy un robot» la presta Google reCAPTCHA. Esos proveedores tratan los datos para prestar ese servicio. La hoja no es pública.",
   },
   {
     titulo: "8. Tus derechos",
@@ -50,7 +50,7 @@ const bloques = [
   {
     titulo: "9. Comunicaciones comerciales",
     texto:
-      "El mensaje con el código y el mensaje con el conocimiento responden a tu solicitud. No autorizan un boletín ni otras ofertas.",
+      "El email con el código responde a tu solicitud. El envío postal del conocimiento también. Ninguno de los dos autoriza un boletín ni otras ofertas.",
   },
   {
     titulo: "10. Datos de otras personas",

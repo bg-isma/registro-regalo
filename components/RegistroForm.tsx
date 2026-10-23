@@ -40,10 +40,10 @@ declare global {
 }
 
 const textos: Record<Codigo, string> = {
-  ok: "Registro hecho. Te escribiremos a este email con el conocimiento.",
+  ok: "Registro hecho. Te enviaremos el conocimiento a esta dirección.",
   sent: "Te hemos enviado un código. Revisa la bandeja y el spam.",
   duplicate: "Este email ya está registrado.",
-  invalid: "Revisa el nombre, el email y la casilla de aceptación.",
+  invalid: "Revisa el nombre, la dirección, el email y la casilla.",
   captcha: "Confirma que no eres un robot.",
   config: "Falta la clave secreta de reCAPTCHA en Apps Script.",
   code: "El código no coincide.",
@@ -162,6 +162,9 @@ export function RegistroForm() {
       const parsed = await post({
         action: "solicitar",
         nombre: String(data.get("nombre") || ""),
+        calle: String(data.get("calle") || ""),
+        codigoPostal: String(data.get("codigoPostal") || ""),
+        provincia: String(data.get("provincia") || ""),
         email: correo,
         acepta: data.get("acepta") === "on",
         captcha,
@@ -265,18 +268,63 @@ export function RegistroForm() {
         onSubmit={onSolicitar}
       >
       <label className="block">
-        <span className="text-[0.72rem] uppercase tracking-[0.18em] text-muted">Nombre</span>
+        <span className="text-[0.72rem] uppercase tracking-[0.18em] text-muted">Nombre y apellidos</span>
         <input
           className={campo}
           name="nombre"
           type="text"
           required
-          minLength={2}
+          minLength={5}
           maxLength={80}
           autoComplete="name"
-          placeholder="Tu nombre"
+          placeholder="Nombre y apellidos"
         />
       </label>
+
+      <label className="mt-6 block">
+        <span className="text-[0.72rem] uppercase tracking-[0.18em] text-muted">Calle</span>
+        <input
+          className={campo}
+          name="calle"
+          type="text"
+          required
+          minLength={5}
+          maxLength={120}
+          autoComplete="street-address"
+          placeholder="Calle, número, piso"
+        />
+      </label>
+
+      <div className="mt-6 grid gap-6 sm:grid-cols-2">
+        <label className="block">
+          <span className="text-[0.72rem] uppercase tracking-[0.18em] text-muted">Código postal</span>
+          <input
+            className={campo}
+            name="codigoPostal"
+            type="text"
+            inputMode="numeric"
+            required
+            minLength={5}
+            maxLength={5}
+            pattern="[0-9]{5}"
+            autoComplete="postal-code"
+            placeholder="35001"
+          />
+        </label>
+        <label className="block">
+          <span className="text-[0.72rem] uppercase tracking-[0.18em] text-muted">Provincia</span>
+          <input
+            className={campo}
+            name="provincia"
+            type="text"
+            required
+            minLength={2}
+            maxLength={60}
+            autoComplete="address-level1"
+            placeholder="Las Palmas"
+          />
+        </label>
+      </div>
 
       <label className="mt-6 block">
         <span className="text-[0.72rem] uppercase tracking-[0.18em] text-muted">Email</span>
@@ -294,7 +342,7 @@ export function RegistroForm() {
       <label className="mt-7 flex items-start gap-3 text-sm leading-relaxed text-ink">
         <input className="mt-1 size-4 accent-ink" name="acepta" type="checkbox" required />
         <span>
-          He leído la <Link className="underline" href="/privacidad">política de privacidad</Link> y acepto recibir el código y el conocimiento en este email.
+          He leído la <Link className="underline" href="/privacidad">política de privacidad</Link> y acepto recibir el código en este email y el conocimiento en esta dirección.
         </span>
       </label>
 

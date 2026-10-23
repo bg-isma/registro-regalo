@@ -16,9 +16,9 @@ const mono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Cuaderno — El conocimiento llega a tu correo",
+  title: "Cuaderno — El conocimiento llega a tu casa",
   description:
-    "Regístrate una vez. Confirmas el email y te escribimos con el conocimiento.",
+    "Regístrate una vez. Confirmas el email y te enviamos el conocimiento a tu dirección.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
