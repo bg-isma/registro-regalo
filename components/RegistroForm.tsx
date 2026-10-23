@@ -94,7 +94,7 @@ export function RegistroForm() {
   const [captcha, setCaptcha] = useState("");
   const [tipo, setTipo] = useState("");
   const [campos, setCampos] = useState(false);
-  const [errores, setErrores] = useState({ email: "", cp: "" });
+  const [errores, setErrores] = useState({ nombre: "", provincia: "", email: "", cp: "" });
   const caja = useRef<HTMLDivElement>(null);
   const widget = useRef<number | null>(null);
   const formulario = useRef<HTMLFormElement>(null);
@@ -102,10 +102,17 @@ export function RegistroForm() {
 
   function revisar(form: HTMLFormElement) {
     const data = new FormData(form);
+    const nombre = String(data.get("nombre") || "").trim();
+    const provincia = String(data.get("provincia") || "").trim();
     const correo = String(data.get("email") || "").trim();
     const cp = String(data.get("codigoPostal") || "").trim();
     setCampos(camposCompletos(form));
     setErrores({
+      nombre:
+        nombre.length > 0 && (nombre.length < 5 || !nombre.includes(" "))
+          ? "Escribe el nombre y los apellidos."
+          : "",
+      provincia: provincia.length === 1 ? "Escribe la provincia." : "",
       email:
         correo.length > 0 && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)
           ? "Escribe un email válido, con @ y dominio."
@@ -253,7 +260,7 @@ export function RegistroForm() {
         formulario.current?.reset();
         setTipo("");
         setCampos(false);
-        setErrores({ email: "", cp: "" });
+        setErrores({ nombre: "", provincia: "", email: "", cp: "" });
         setCaptcha("");
         if (window.grecaptcha && widget.current !== null) window.grecaptcha.reset(widget.current);
         setPaso("datos");
@@ -358,6 +365,7 @@ export function RegistroForm() {
           autoComplete="name"
           placeholder="Nombre y apellidos"
         />
+        {errores.nombre ? <p className="mt-2 text-xs leading-relaxed text-orange">{errores.nombre}</p> : null}
       </label>
 
       <label className="mt-6 block">
@@ -403,6 +411,9 @@ export function RegistroForm() {
             autoComplete="address-level1"
             placeholder="Las Palmas"
           />
+          {errores.provincia ? (
+            <p className="mt-2 text-xs leading-relaxed text-orange">{errores.provincia}</p>
+          ) : null}
         </label>
       </div>
 
