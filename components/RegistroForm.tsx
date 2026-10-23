@@ -58,7 +58,9 @@ const campo =
   "mt-2 w-full border-0 border-b border-line bg-transparent py-3 text-base text-ink outline-none transition-colors placeholder:text-ink/30 focus:border-ink";
 
 const boton =
-  "mt-8 bg-ink px-7 py-3.5 text-[0.68rem] uppercase tracking-[0.18em] text-cream transition-colors hover:bg-[var(--yellow)] hover:text-ink disabled:cursor-wait disabled:opacity-60";
+  "order-3 mt-8 bg-ink px-7 py-3.5 text-[0.68rem] uppercase tracking-[0.18em] text-cream transition-colors hover:bg-[var(--yellow)] hover:text-ink disabled:cursor-wait disabled:opacity-60 lg:col-span-7 lg:col-start-1 lg:justify-self-start";
+
+const enColumna = "order-3 lg:col-span-7 lg:col-start-1";
 
 const SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
 
@@ -271,7 +273,7 @@ export function RegistroForm() {
   return (
     <>
       <form
-        className="mt-10 max-w-md"
+        className={`${enColumna} mt-8 max-w-md`}
         hidden={paso !== "codigo"}
         onSubmit={onConfirmar}
       >
@@ -312,14 +314,14 @@ export function RegistroForm() {
 
       <form
         ref={formulario}
-        className="mt-8 w-full"
+        className="contents"
         hidden={paso !== "datos"}
         noValidate
         onInput={(event) => revisar(event.currentTarget)}
         onChange={(event) => revisar(event.currentTarget)}
         onSubmit={onSolicitar}
       >
-      <fieldset>
+      <fieldset className={`${enColumna} mt-8`}>
         <legend className="mb-3 text-[0.72rem] uppercase tracking-[0.18em] text-muted">
           Elige un conocimiento
         </legend>
@@ -343,7 +345,7 @@ export function RegistroForm() {
         })}
         </div>
       </fieldset>
-      <label className="mt-12 block">
+      <label className={`${enColumna} mt-12 block`}>
         <span className="text-[0.72rem] uppercase tracking-[0.18em] text-muted">Nombre y apellidos</span>
         <input
           className={campo}
@@ -358,7 +360,7 @@ export function RegistroForm() {
         {errores.nombre ? <p className="mt-2 text-xs leading-relaxed text-orange">{errores.nombre}</p> : null}
       </label>
 
-      <label className="mt-6 block">
+      <label className={`${enColumna} mt-6 block`}>
         <span className="text-[0.72rem] uppercase tracking-[0.18em] text-muted">Calle</span>
         <input
           className={campo}
@@ -372,7 +374,7 @@ export function RegistroForm() {
         />
       </label>
 
-      <div className="mt-6 grid gap-6 sm:grid-cols-2">
+      <div className={`${enColumna} mt-6 grid gap-6 sm:grid-cols-2`}>
         <label className="block">
           <span className="text-[0.72rem] uppercase tracking-[0.18em] text-muted">Código postal</span>
           <input
@@ -407,7 +409,7 @@ export function RegistroForm() {
         </label>
       </div>
 
-      <label className="mt-6 block">
+      <label className={`${enColumna} mt-6 block`}>
         <span className="text-[0.72rem] uppercase tracking-[0.18em] text-muted">Email</span>
         <input
           className={campo}
@@ -421,7 +423,7 @@ export function RegistroForm() {
         {errores.email ? <p className="mt-2 text-xs leading-relaxed text-orange">{errores.email}</p> : null}
       </label>
 
-      <div className="mt-7 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="order-3 mt-7 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between lg:col-span-12 lg:col-start-1">
         <label className="flex max-w-sm items-start gap-3 text-sm leading-relaxed text-ink">
           <input className="mt-1 size-4 shrink-0 accent-ink" name="acepta" type="checkbox" required />
           <span>
@@ -443,7 +445,7 @@ export function RegistroForm() {
 
       </form>
 
-      <p className={`mt-4 min-h-6 max-w-md text-sm leading-relaxed ${color}`} role="status">
+      <p className={`${enColumna} mt-4 min-h-6 max-w-md text-sm leading-relaxed ${color}`} role="status">
         {aviso}
       </p>
     </>
