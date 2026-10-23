@@ -63,7 +63,7 @@ const boton =
 const SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
 
 const TIPOS = [
-  { id: "Oficio", texto: "Un cuaderno sobre cómo se hace una cosa con las manos." },
+  { id: "Oficio", texto: "Afilar un cuchillo, coser una tela, encender un horno." },
   { id: "Lectura", texto: "Tres textos, elegidos para empezar por uno." },
   { id: "Mirada", texto: "Una carta para leer un lugar al llegar." },
 ];
@@ -94,10 +94,25 @@ export function RegistroForm() {
   const [captcha, setCaptcha] = useState("");
   const [tipo, setTipo] = useState("");
   const [campos, setCampos] = useState(false);
+  const [errores, setErrores] = useState({ email: "", cp: "" });
   const caja = useRef<HTMLDivElement>(null);
   const widget = useRef<number | null>(null);
   const formulario = useRef<HTMLFormElement>(null);
   const listo = campos && tipo !== "";
+
+  function revisar(form: HTMLFormElement) {
+    const data = new FormData(form);
+    const correo = String(data.get("email") || "").trim();
+    const cp = String(data.get("codigoPostal") || "").trim();
+    setCampos(camposCompletos(form));
+    setErrores({
+      email:
+        correo.length > 0 && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)
+          ? "Escribe un email válido, con @ y dominio."
+          : "",
+      cp: cp.length > 0 && !/^\d{5}$/.test(cp) ? "El código postal son 5 números." : "",
+    });
+  }
 
   useEffect(() => {
     if (!listo || !SITE_KEY) return;
@@ -238,6 +253,7 @@ export function RegistroForm() {
         formulario.current?.reset();
         setTipo("");
         setCampos(false);
+        setErrores({ email: "", cp: "" });
         setCaptcha("");
         if (window.grecaptcha && widget.current !== null) window.grecaptcha.reset(widget.current);
         setPaso("datos");
@@ -301,15 +317,16 @@ export function RegistroForm() {
         ref={formulario}
         className="mt-8 w-full"
         hidden={paso !== "datos"}
-        onInput={(event) => setCampos(camposCompletos(event.currentTarget))}
-        onChange={(event) => setCampos(camposCompletos(event.currentTarget))}
+        noValidate
+        onInput={(event) => revisar(event.currentTarget)}
+        onChange={(event) => revisar(event.currentTarget)}
         onSubmit={onSolicitar}
       >
       <fieldset>
         <legend className="mb-3 text-[0.72rem] uppercase tracking-[0.18em] text-muted">
           Elige un conocimiento
         </legend>
-        <div className="grid gap-3 sm:grid-cols-3">
+        <div className="grid items-stretch gap-3 sm:grid-cols-3">
         {TIPOS.map((item) => {
           const activo = tipo === item.id;
           return (
@@ -317,7 +334,7 @@ export function RegistroForm() {
               key={item.id}
               type="button"
               aria-pressed={activo}
-              className={`border px-4 py-4 text-left transition-colors ${
+              className={`flex h-full w-full flex-col items-start justify-start border px-4 py-4 text-left transition-colors ${
                 activo ? "border-ink marca" : "border-line bg-transparent hover:border-ink"
               }`}
               onClick={() => setTipo(item.id)}
@@ -329,7 +346,7 @@ export function RegistroForm() {
         })}
         </div>
       </fieldset>
-      <label className="block">
+      <label className="mt-12 block">
         <span className="text-[0.72rem] uppercase tracking-[0.18em] text-muted">Nombre y apellidos</span>
         <input
           className={campo}
@@ -372,6 +389,7 @@ export function RegistroForm() {
             autoComplete="postal-code"
             placeholder="35001"
           />
+          {errores.cp ? <p className="mt-2 text-xs leading-relaxed text-orange">{errores.cp}</p> : null}
         </label>
         <label className="block">
           <span className="text-[0.72rem] uppercase tracking-[0.18em] text-muted">Provincia</span>
@@ -399,6 +417,7 @@ export function RegistroForm() {
           autoComplete="email"
           placeholder="tu@correo.com"
         />
+        {errores.email ? <p className="mt-2 text-xs leading-relaxed text-orange">{errores.email}</p> : null}
       </label>
 
       <div className="mt-7 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
