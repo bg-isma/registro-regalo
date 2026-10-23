@@ -62,6 +62,29 @@ const boton =
 
 const SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
 
+const TIPOS = [
+  { id: "Oficio", texto: "Un cuaderno sobre cómo se hace una cosa con las manos." },
+  { id: "Lectura", texto: "Tres textos, elegidos para empezar por uno." },
+  { id: "Mirada", texto: "Una carta para leer un lugar al llegar." },
+];
+
+function camposCompletos(form: HTMLFormElement) {
+  const data = new FormData(form);
+  const nombre = String(data.get("nombre") || "").trim();
+  const calle = String(data.get("calle") || "").trim();
+  const cp = String(data.get("codigoPostal") || "").trim();
+  const provincia = String(data.get("provincia") || "").trim();
+  const correo = String(data.get("email") || "").trim();
+  return (
+    nombre.length >= 5 &&
+    nombre.includes(" ") &&
+    calle.length >= 5 &&
+    /^\d{5}$/.test(cp) &&
+    provincia.length >= 2 &&
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)
+  );
+}
+
 export function RegistroForm() {
   const [aviso, setAviso] = useState("");
   const [tono, setTono] = useState<Tono>("error");
@@ -69,12 +92,15 @@ export function RegistroForm() {
   const [paso, setPaso] = useState<"datos" | "codigo">("datos");
   const [email, setEmail] = useState("");
   const [captcha, setCaptcha] = useState("");
+  const [tipo, setTipo] = useState("");
+  const [campos, setCampos] = useState(false);
   const caja = useRef<HTMLDivElement>(null);
   const widget = useRef<number | null>(null);
   const formulario = useRef<HTMLFormElement>(null);
+  const listo = campos && tipo !== "";
 
   useEffect(() => {
-    if (!SITE_KEY || !caja.current) return;
+    if (!listo || !SITE_KEY) return;
     let cancelado = false;
 
     function montar() {
@@ -89,19 +115,21 @@ export function RegistroForm() {
 
     if (window.grecaptcha) {
       window.grecaptcha.ready(montar);
-      return;
+    } else if (!document.querySelector("script[data-recaptcha='1']")) {
+      const script = document.createElement("script");
+      script.src = "https://www.google.com/recaptcha/api.js?render=explicit&hl=es";
+      script.async = true;
+      script.dataset.recaptcha = "1";
+      script.onload = () => window.grecaptcha?.ready(montar);
+      document.body.appendChild(script);
     }
-
-    const script = document.createElement("script");
-    script.src = "https://www.google.com/recaptcha/api.js?render=explicit&hl=es";
-    script.async = true;
-    script.onload = () => window.grecaptcha?.ready(montar);
-    document.body.appendChild(script);
 
     return () => {
       cancelado = true;
+      widget.current = null;
+      setCaptcha("");
     };
-  }, []);
+  }, [listo]);
 
   function mostrar(codigo: Codigo, siguiente: Tono) {
     setTono(siguiente);
@@ -145,6 +173,11 @@ export function RegistroForm() {
     event.preventDefault();
     const form = event.currentTarget;
     const data = new FormData(form);
+    if (!tipo) {
+      setTono("error");
+      setAviso("Elige un conocimiento.");
+      return;
+    }
     if (!SITE_KEY) {
       setTono("error");
       setAviso("Falta la clave de sitio de reCAPTCHA. Pégala en .env.local.");
@@ -165,6 +198,7 @@ export function RegistroForm() {
         calle: String(data.get("calle") || ""),
         codigoPostal: String(data.get("codigoPostal") || ""),
         provincia: String(data.get("provincia") || ""),
+        tipo,
         email: correo,
         acepta: data.get("acepta") === "on",
         captcha,
@@ -202,6 +236,8 @@ export function RegistroForm() {
       if (!parsed) return;
       if (parsed.ok) {
         formulario.current?.reset();
+        setTipo("");
+        setCampos(false);
         setCaptcha("");
         if (window.grecaptcha && widget.current !== null) window.grecaptcha.reset(widget.current);
         setPaso("datos");
@@ -263,10 +299,36 @@ export function RegistroForm() {
 
       <form
         ref={formulario}
-        className="mt-10 max-w-md"
+        className="mt-8 w-full"
         hidden={paso !== "datos"}
+        onInput={(event) => setCampos(camposCompletos(event.currentTarget))}
+        onChange={(event) => setCampos(camposCompletos(event.currentTarget))}
         onSubmit={onSolicitar}
       >
+      <fieldset>
+        <legend className="mb-3 text-[0.72rem] uppercase tracking-[0.18em] text-muted">
+          Elige un conocimiento
+        </legend>
+        <div className="grid gap-3 sm:grid-cols-3">
+        {TIPOS.map((item) => {
+          const activo = tipo === item.id;
+          return (
+            <button
+              key={item.id}
+              type="button"
+              aria-pressed={activo}
+              className={`border px-4 py-4 text-left transition-colors ${
+                activo ? "border-ink marca" : "border-line bg-transparent hover:border-ink"
+              }`}
+              onClick={() => setTipo(item.id)}
+            >
+              <span className="tipo-display block text-3xl uppercase leading-none">{item.id}</span>
+              <span className="mt-3 block text-xs leading-relaxed">{item.texto}</span>
+            </button>
+          );
+        })}
+        </div>
+      </fieldset>
       <label className="block">
         <span className="text-[0.72rem] uppercase tracking-[0.18em] text-muted">Nombre y apellidos</span>
         <input
@@ -339,20 +401,21 @@ export function RegistroForm() {
         />
       </label>
 
-      <label className="mt-7 flex items-start gap-3 text-sm leading-relaxed text-ink">
-        <input className="mt-1 size-4 accent-ink" name="acepta" type="checkbox" required />
-        <span>
-          He leído la <Link className="underline" href="/privacidad">política de privacidad</Link> y acepto recibir el código en este email y el conocimiento en esta dirección.
-        </span>
-      </label>
+      <div className="mt-7 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <label className="flex max-w-sm items-start gap-3 text-sm leading-relaxed text-ink">
+          <input className="mt-1 size-4 shrink-0 accent-ink" name="acepta" type="checkbox" required />
+          <span>
+            He leído la <Link className="underline" href="/privacidad">política de privacidad</Link> y acepto recibir el código en este email y el conocimiento en esta dirección.
+          </span>
+        </label>
 
-      {SITE_KEY ? (
-        <div className="mt-7 min-h-[78px]" ref={caja} />
-      ) : (
-        <p className="mt-7 text-sm leading-relaxed text-orange">
-          Falta la clave de sitio de reCAPTCHA. Pégala en .env.local.
-        </p>
-      )}
+        {listo && SITE_KEY ? <div className="min-h-[78px] shrink-0 self-end sm:self-center" ref={caja} /> : null}
+        {listo && !SITE_KEY ? (
+          <p className="max-w-xs text-sm leading-relaxed text-orange sm:text-right">
+            Falta la clave de sitio de reCAPTCHA. Pégala en .env.local.
+          </p>
+        ) : null}
+      </div>
 
       <button className={boton} type="submit" disabled={enviando}>
         {enviando ? "Enviando código…" : "Enviar código"}

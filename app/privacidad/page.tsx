@@ -15,12 +15,12 @@ const bloques = [
   {
     titulo: "2. Datos que se recogen",
     texto:
-      "Nombre y apellidos, email, calle, código postal, provincia y la casilla de aceptación. También se guardan la fecha del registro y, de forma temporal, un código de seis cifras para comprobar que el buzón es tuyo. No se pide teléfono ni documento de identidad.",
+      "Nombre y apellidos, email, calle, código postal, provincia, el tipo de conocimiento elegido y la casilla de aceptación. Los tipos son Oficio, Lectura y Mirada. También se guardan la fecha del registro y, de forma temporal, un código de seis cifras para comprobar que el buzón es tuyo. No se pide teléfono ni documento de identidad.",
   },
   {
     titulo: "3. Para qué se usan",
     texto:
-      "El email sirve para enviarte el código de comprobación. El nombre y la dirección sirven para enviarte el conocimiento por correo postal a tu casa, si confirmas el código. La hoja sirve para no enviar dos veces a la misma persona y para anotar cuándo salió el envío. No se usa para publicidad ni para ceder la lista con ese fin.",
+      "El email sirve para enviarte el código de comprobación. El nombre, la dirección y el tipo elegido sirven para enviarte ese conocimiento por correo postal a tu casa, si confirmas el código. La hoja sirve para no enviar dos veces a la misma persona y para anotar cuándo salió el envío. No se usa para publicidad ni para ceder la lista con ese fin.",
   },
   {
     titulo: "4. Por qué es lícito",
