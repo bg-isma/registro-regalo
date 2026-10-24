@@ -79,6 +79,13 @@ function telefonoValido(valor: string) {
   return /^[6789]\d{8}$/.test(texto);
 }
 
+function quitarEnlace() {
+  const url = new URL(window.location.href);
+  if (!url.searchParams.has("t")) return;
+  url.searchParams.delete("t");
+  window.history.replaceState(null, "", url.pathname + url.search + url.hash);
+}
+
 function casillaMarcada(form: HTMLFormElement) {
   const casilla = form.elements.namedItem("acepta");
   return casilla instanceof HTMLInputElement && casilla.checked;
@@ -95,7 +102,7 @@ export function RegistroForm() {
   const [aviso, setAviso] = useState("");
   const [tono, setTono] = useState<Tono>("error");
   const [enviando, setEnviando] = useState(false);
-  const [paso, setPaso] = useState<"datos" | "codigo">("datos");
+  const [paso, setPaso] = useState<"datos" | "codigo" | "abriendo">("datos");
   const [email, setEmail] = useState("");
   const [captcha, setCaptcha] = useState("");
   const [tipo, setTipo] = useState("");
@@ -132,6 +139,48 @@ export function RegistroForm() {
         telefono.length > 0 && !telefonoValido(telefono) ? "Escribe un teléfono de 9 números." : "",
     });
   }
+
+  useEffect(() => {
+    const token = new URLSearchParams(window.location.search).get("t") || "";
+    if (!/^[0-9a-f-]{36}$/i.test(token)) return;
+    const endpoint = process.env.NEXT_PUBLIC_REGISTRO_URL;
+    if (!endpoint) {
+      setTono("error");
+      setAviso(textos.missing);
+      return;
+    }
+    let cancelado = false;
+    setPaso("abriendo");
+    fetch(endpoint, {
+      method: "POST",
+      redirect: "follow",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ action: "abrir", token }),
+    })
+      .then((respuesta) => respuesta.text())
+      .then((texto) => JSON.parse(texto) as { ok?: boolean; email?: string })
+      .then((parsed) => {
+        if (cancelado) return;
+        if (parsed?.ok && parsed.email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(parsed.email)) {
+          setEmail(parsed.email);
+          setPaso("codigo");
+          return;
+        }
+        quitarEnlace();
+        setPaso("datos");
+        setTono("error");
+        setAviso("Este enlace ha caducado. Pide el código otra vez.");
+      })
+      .catch(() => {
+        if (cancelado) return;
+        setPaso("datos");
+        setTono("error");
+        setAviso(textos.error);
+      });
+    return () => {
+      cancelado = true;
+    };
+  }, []);
 
   useEffect(() => {
     if (!listo || !SITE_KEY) return;
@@ -182,7 +231,7 @@ export function RegistroForm() {
       headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify(body),
     });
-    return JSON.parse(await respuesta.text()) as { ok?: boolean; pending?: boolean; code?: string };
+    return JSON.parse(await respuesta.text()) as { ok?: boolean; pending?: boolean; code?: string; email?: string };
   }
 
   function avisoDe(code: string | undefined) {
@@ -291,12 +340,16 @@ export function RegistroForm() {
         setErrores({ nombre: "", provincia: "", email: "", cp: "", telefono: "" });
         setCaptcha("");
         if (window.grecaptcha && widget.current !== null) window.grecaptcha.reset(widget.current);
+        quitarEnlace();
         setPaso("datos");
         mostrar("ok", "ok");
         return;
       }
       avisoDe(parsed.code);
-      if (parsed.code === "expired") setPaso("datos");
+      if (parsed.code === "expired") {
+        quitarEnlace();
+        setPaso("datos");
+      }
     } catch {
       mostrar("error", "error");
     } finally {
@@ -308,9 +361,9 @@ export function RegistroForm() {
 
   return (
     <>
+      {paso === "codigo" ? (
       <form
         className={`${enColumna} mt-5 max-w-md`}
-        hidden={paso !== "codigo"}
         onSubmit={onConfirmar}
       >
         <p className="text-base leading-relaxed text-ink">
@@ -324,6 +377,7 @@ export function RegistroForm() {
             type="text"
             inputMode="numeric"
             autoComplete="one-time-code"
+            autoFocus
             required
             minLength={6}
             maxLength={6}
@@ -338,6 +392,7 @@ export function RegistroForm() {
           className="mt-4 block text-sm text-muted underline-offset-4 hover:underline"
           type="button"
           onClick={() => {
+            quitarEnlace();
             setPaso("datos");
             setCaptcha("");
             setAviso("");
@@ -347,6 +402,11 @@ export function RegistroForm() {
           Usar otro email
         </button>
       </form>
+      ) : null}
+
+      {paso === "abriendo" ? (
+        <p className={`${enColumna} mt-5 text-base leading-relaxed text-ink`}>Abriendo el código…</p>
+      ) : null}
 
       <form
         ref={formulario}
