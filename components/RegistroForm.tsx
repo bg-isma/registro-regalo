@@ -1,7 +1,9 @@
 "use client";
 
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 type Codigo =
   | "ok"
@@ -41,7 +43,7 @@ declare global {
 }
 
 const textos: Record<Codigo, string> = {
-  ok: "Registro hecho. Te enviaremos el conocimiento a esta dirección.",
+  ok: "Te enviaremos el conocimiento a esta dirección.",
   sent: "Te hemos enviado un código. Revisa la bandeja y el spam.",
   duplicate: "Este email ya está registrado.",
   invalid: "Revisa el nombre, la dirección, el teléfono, el email y la casilla.",
@@ -77,6 +79,100 @@ function telefonoValido(valor: string) {
   if (texto.startsWith("+34")) texto = texto.slice(3);
   else if (texto.startsWith("0034")) texto = texto.slice(4);
   return /^[6789]\d{8}$/.test(texto);
+}
+
+function AvisoModal({
+  abierto,
+  tono,
+  texto,
+  onCerrar,
+}: {
+  abierto: boolean;
+  tono: Tono;
+  texto: string;
+  onCerrar: () => void;
+}) {
+  const cerrar = useRef<HTMLButtonElement>(null);
+  const suave = useReducedMotion();
+  const [montado, setMontado] = useState(false);
+
+  useEffect(() => {
+    setMontado(true);
+  }, []);
+
+  useEffect(() => {
+    if (!abierto) return;
+    const antes = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    cerrar.current?.focus();
+    function tecla(event: KeyboardEvent) {
+      if (event.key === "Escape") onCerrar();
+    }
+    window.addEventListener("keydown", tecla);
+    return () => {
+      document.body.style.overflow = antes;
+      window.removeEventListener("keydown", tecla);
+    };
+  }, [abierto, onCerrar]);
+
+  if (!montado) return null;
+
+  const titulo =
+    tono === "ok" ? (
+      <>
+        Registro <span className="marca px-1">hecho</span>
+      </>
+    ) : (
+      <>
+        No se ha <span className="text-orange">enviado</span>
+      </>
+    );
+
+  return createPortal(
+    <AnimatePresence>
+      {abierto ? (
+        <div className="fixed inset-0 z-[80] flex items-center justify-center p-4 sm:p-6">
+          <motion.button
+            type="button"
+            aria-label="Cerrar"
+            className="absolute inset-0 bg-ink/45"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: suave ? 0 : 0.2 }}
+            onClick={onCerrar}
+          />
+          <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="aviso-titulo"
+            className="relative max-h-[85vh] w-full max-w-md overflow-auto border border-ink bg-[var(--cream)] px-6 py-8 sm:px-10 sm:py-10"
+            initial={suave ? false : { opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={suave ? { opacity: 0 } : { opacity: 0, y: 8 }}
+            transition={{ duration: suave ? 0.01 : 0.32, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <p className="text-[0.72rem] uppercase tracking-[0.18em] text-muted">
+              {tono === "ok" ? "Cuaderno" : "Revisa el formulario"}
+            </p>
+            <h2 id="aviso-titulo" className="tipo-display mt-3 text-5xl leading-none uppercase sm:text-6xl">
+              {titulo}
+            </h2>
+            <p className="mt-5 max-w-sm text-base leading-relaxed text-ink">{texto}</p>
+            <button
+              ref={cerrar}
+              type="button"
+              className="mt-8 bg-ink px-7 py-3.5 text-[0.68rem] uppercase tracking-[0.18em] text-cream transition-colors hover:bg-[var(--yellow)] hover:text-ink"
+              onClick={onCerrar}
+            >
+              {tono === "ok" ? "Listo" : "Cerrar"}
+            </button>
+          </motion.div>
+        </div>
+      ) : null}
+    </AnimatePresence>,
+    document.body,
+  );
 }
 
 function quitarEnlace() {
@@ -358,9 +454,16 @@ export function RegistroForm() {
   }
 
   const color = tono === "error" ? "text-orange" : "text-ink";
+  const cerrarAviso = useCallback(() => setAviso(""), []);
 
   return (
     <>
+      <AvisoModal
+        abierto={aviso !== "" && tono !== "info"}
+        tono={tono}
+        texto={aviso}
+        onCerrar={cerrarAviso}
+      />
       {paso === "codigo" ? (
       <form
         className={`${enColumna} mt-5 max-w-md`}
@@ -567,7 +670,7 @@ export function RegistroForm() {
       </form>
 
       <p className={`${enColumna} mt-4 min-h-6 max-w-md text-sm leading-relaxed ${color}`} role="status">
-        {aviso}
+        {tono === "info" ? aviso : ""}
       </p>
     </>
   );
