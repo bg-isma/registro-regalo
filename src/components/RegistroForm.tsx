@@ -151,7 +151,7 @@ function AvisoModal({
             transition={{ duration: suave ? 0.01 : 0.32, ease: [0.22, 1, 0.36, 1] }}
           >
             <p className="text-[0.72rem] uppercase tracking-[0.18em] text-muted">
-              {tono === "ok" ? "Cuaderno" : "Revisa el formulario"}
+              {tono === "ok" ? "Confirmado" : "Revisa el formulario"}
             </p>
             <h2 id="aviso-titulo" className="tipo-display mt-3 text-5xl leading-none uppercase sm:text-6xl">
               {titulo}
@@ -225,9 +225,13 @@ export function RegistroForm() {
           : "",
       provincia: provincia.length === 1 ? "Escribe la provincia." : "",
       email:
-        correo.length > 0 && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)
-          ? "Escribe un email válido, con @ y dominio."
-          : "",
+        correo.length === 0
+          ? ""
+          : correo.includes("+")
+            ? "No uses un + en el email."
+            : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)
+              ? "Escribe un email válido, con @ y dominio."
+              : "",
       cp: cp.length > 0 && !/^\d{5}$/.test(cp) ? "El código postal son 5 números." : "",
       telefono:
         telefono.length > 0 && !telefonoValido(telefono) ? "Escribe un teléfono de 9 números." : "",
@@ -351,6 +355,11 @@ export function RegistroForm() {
     event.preventDefault();
     const form = event.currentTarget;
     const data = new FormData(form);
+    if (String(data.get("email") || "").includes("+")) {
+      setTono("error");
+      setAviso("No uses un + en el email.");
+      return;
+    }
     if (!tipo) {
       setTono("error");
       setAviso("Elige un conocimiento.");
