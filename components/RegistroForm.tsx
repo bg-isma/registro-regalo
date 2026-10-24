@@ -44,7 +44,7 @@ const textos: Record<Codigo, string> = {
   ok: "Registro hecho. Te enviaremos el conocimiento a esta dirección.",
   sent: "Te hemos enviado un código. Revisa la bandeja y el spam.",
   duplicate: "Este email ya está registrado.",
-  invalid: "Revisa el nombre, la dirección, el email y la casilla.",
+  invalid: "Revisa el nombre, la dirección, el teléfono, el email y la casilla.",
   captcha: "Confirma que no eres un robot.",
   config: "Falta la clave secreta de reCAPTCHA en Apps Script.",
   code: "El código no coincide.",
@@ -72,6 +72,13 @@ const TIPOS = [
   { id: "Mirada", texto: "Una carta para leer un lugar al llegar." },
 ];
 
+function telefonoValido(valor: string) {
+  let texto = valor.replace(/[\s.-]/g, "");
+  if (texto.startsWith("+34")) texto = texto.slice(3);
+  else if (texto.startsWith("0034")) texto = texto.slice(4);
+  return /^[6789]\d{8}$/.test(texto);
+}
+
 function casillaMarcada(form: HTMLFormElement) {
   const casilla = form.elements.namedItem("acepta");
   return casilla instanceof HTMLInputElement && casilla.checked;
@@ -79,7 +86,7 @@ function casillaMarcada(form: HTMLFormElement) {
 
 function camposRellenos(form: HTMLFormElement) {
   const data = new FormData(form);
-  return ["nombre", "calle", "codigoPostal", "provincia", "email"].every(
+  return ["nombre", "calle", "codigoPostal", "provincia", "email", "telefono"].every(
     (campo) => String(data.get(campo) || "").trim().length > 0,
   );
 }
@@ -94,7 +101,7 @@ export function RegistroForm() {
   const [tipo, setTipo] = useState("");
   const [acepta, setAcepta] = useState(false);
   const [campos, setCampos] = useState(false);
-  const [errores, setErrores] = useState({ nombre: "", provincia: "", email: "", cp: "" });
+  const [errores, setErrores] = useState({ nombre: "", provincia: "", email: "", cp: "", telefono: "" });
   const caja = useRef<HTMLDivElement>(null);
   const widget = useRef<number | null>(null);
   const formulario = useRef<HTMLFormElement>(null);
@@ -107,6 +114,7 @@ export function RegistroForm() {
     const provincia = String(data.get("provincia") || "").trim();
     const correo = String(data.get("email") || "").trim();
     const cp = String(data.get("codigoPostal") || "").trim();
+    const telefono = String(data.get("telefono") || "").trim();
     setCampos(camposRellenos(form));
     setAcepta(casillaMarcada(form));
     setErrores({
@@ -120,6 +128,8 @@ export function RegistroForm() {
           ? "Escribe un email válido, con @ y dominio."
           : "",
       cp: cp.length > 0 && !/^\d{5}$/.test(cp) ? "El código postal son 5 números." : "",
+      telefono:
+        telefono.length > 0 && !telefonoValido(telefono) ? "Escribe un teléfono de 9 números." : "",
     });
   }
 
@@ -234,6 +244,7 @@ export function RegistroForm() {
         calle: String(data.get("calle") || ""),
         codigoPostal: String(data.get("codigoPostal") || ""),
         provincia: String(data.get("provincia") || ""),
+        telefono: String(data.get("telefono") || ""),
         tipo,
         email: correo,
         acepta: data.get("acepta") === "on",
@@ -277,7 +288,7 @@ export function RegistroForm() {
         setTipo("");
         setAcepta(false);
         setCampos(false);
-        setErrores({ nombre: "", provincia: "", email: "", cp: "" });
+        setErrores({ nombre: "", provincia: "", email: "", cp: "", telefono: "" });
         setCaptcha("");
         if (window.grecaptcha && widget.current !== null) window.grecaptcha.reset(widget.current);
         setPaso("datos");
@@ -452,6 +463,21 @@ export function RegistroForm() {
           placeholder="tu@correo.com"
         />
         {errores.email ? <p className="mt-2 text-xs leading-relaxed text-orange">{errores.email}</p> : null}
+      </label>
+
+      <label className={`${enColumna} mt-4 block`}>
+        <span className="text-[0.72rem] uppercase tracking-[0.18em] text-muted">Teléfono</span>
+        <input
+          className={campo}
+          name="telefono"
+          type="tel"
+          inputMode="tel"
+          required
+          maxLength={16}
+          autoComplete="tel"
+          placeholder="612 345 678"
+        />
+        {errores.telefono ? <p className="mt-2 text-xs leading-relaxed text-orange">{errores.telefono}</p> : null}
       </label>
 
       <div className="order-3 mt-5 grid grid-cols-1 gap-4 lg:col-span-12 lg:col-start-1 lg:grid-cols-12 lg:items-center lg:gap-x-8">

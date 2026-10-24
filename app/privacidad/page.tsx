@@ -15,12 +15,12 @@ const bloques = [
   {
     titulo: "2. Datos que se recogen",
     texto:
-      "Nombre y apellidos, email, calle, código postal, provincia, el tipo de conocimiento elegido y la casilla de aceptación. Los tipos son Oficio, Lectura y Mirada. También se guardan la fecha del registro y, de forma temporal, un código de seis cifras para comprobar que el buzón es tuyo. No se pide teléfono ni documento de identidad.",
+      "Nombre y apellidos, email, teléfono, calle, código postal, provincia, el tipo de conocimiento elegido y la casilla de aceptación. Los tipos son Oficio, Lectura y Mirada. También se guardan la fecha del registro y, de forma temporal, un código de seis cifras para comprobar que el buzón es tuyo. No se pide documento de identidad.",
   },
   {
     titulo: "3. Para qué se usan",
     texto:
-      "El email sirve para enviarte el código de comprobación. El nombre, la dirección y el tipo elegido sirven para enviarte ese conocimiento por correo postal a tu casa, si confirmas el código. La hoja sirve para no enviar dos veces a la misma persona y para anotar cuándo salió el envío. No se usa para publicidad ni para ceder la lista con ese fin.",
+      "El email sirve para enviarte el código de comprobación. El nombre, el teléfono, la dirección y el tipo elegido sirven para enviarte ese conocimiento por correo postal a tu casa, si confirmas el código. El teléfono se usa solo si hace falta localizarte para ese envío. La hoja sirve para no enviar dos veces a la misma persona y para anotar cuándo salió el envío. No se usa para publicidad ni para ceder la lista con ese fin.",
   },
   {
     titulo: "4. Por qué es lícito",
@@ -30,12 +30,12 @@ const bloques = [
   {
     titulo: "5. Qué es obligatorio",
     texto:
-      "El nombre y los apellidos, la calle, el código postal, la provincia, el email y la casilla. Sin ellos no se puede comprobar el buzón ni enviar el conocimiento a casa. El resto de la web se puede ver sin registrarse.",
+      "El nombre y los apellidos, la calle, el código postal, la provincia, el email, el teléfono y la casilla. Sin ellos no se puede comprobar el buzón ni preparar el envío a casa. El resto de la web se puede ver sin registrarse.",
   },
   {
     titulo: "6. Cuánto tiempo se conservan",
     texto:
-      "El código de comprobación caduca a los 30 minutos y se borra al confirmar o al caducar. El nombre, el email y la dirección se conservan el tiempo necesario para hacer el envío postal y revisar que no se repita, como máximo 12 meses desde el registro, salvo que pidas el borrado antes.",
+      "El código de comprobación caduca a los 30 minutos y se borra al confirmar o al caducar. El nombre, el email, el teléfono y la dirección se conservan el tiempo necesario para hacer el envío postal y revisar que no se repita, como máximo 12 meses desde el registro, salvo que pidas el borrado antes.",
   },
   {
     titulo: "7. Quién más interviene",
@@ -55,7 +55,7 @@ const bloques = [
   {
     titulo: "10. Datos de otras personas",
     texto:
-      "Escribe solo tu propio email. Si facilitas el de otra persona, debes contar con su autorización.",
+      "Escribe solo tu propio email y tu propio teléfono. Si facilitas los de otra persona, debes contar con su autorización.",
   },
   {
     titulo: "11. Menores",
