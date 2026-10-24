@@ -1,11 +1,7 @@
-import type { Metadata } from "next";
-import Link from "next/link";
+---
+import Base from "../layouts/Base.astro";
 
-export const metadata: Metadata = {
-  title: "Política de privacidad — Cuaderno",
-  description: "Qué datos recoge esta página de ejemplo y para qué se usan.",
-};
-
+const base = import.meta.env.BASE_URL;
 const bloques = [
   {
     titulo: "1. Responsable",
@@ -78,34 +74,34 @@ const bloques = [
       "Si cambia el uso de los datos, esta página se actualizará. La versión visible aquí es la que está en vigor.",
   },
 ];
+---
 
-export default function Privacidad() {
-  return (
-    <main className="mx-auto w-full max-w-3xl flex-1 px-6 py-8 sm:px-10">
-      <header className="flex items-baseline justify-between border-b border-line pb-5">
-        <Link className="tipo-display text-3xl uppercase tracking-tight" href="/">
-          Cuaderno
-        </Link>
-        <Link className="text-[0.68rem] uppercase tracking-[0.22em] text-muted" href="/">
-          Volver
-        </Link>
-      </header>
+<Base
+  title="Política de privacidad — Cuaderno"
+  description="Qué datos recoge esta página de ejemplo y para qué se usan."
+>
+  <main class="mx-auto w-full max-w-3xl flex-1 px-6 py-8 sm:px-10">
+    <header class="flex items-baseline justify-between border-b border-line pb-5">
+      <a class="tipo-display text-3xl uppercase tracking-tight" href={base}>Cuaderno</a>
+      <a class="text-[0.68rem] uppercase tracking-[0.22em] text-muted" href={base}>Volver</a>
+    </header>
 
-      <h1 className="tipo-display mt-10 text-5xl leading-[0.9] font-bold uppercase sm:text-7xl">
-        Política de <span className="marca px-1">privacidad</span>
-      </h1>
-      <p className="mt-6 text-sm leading-relaxed text-muted">
-        Texto de ejemplo para esta página. No copies una política ajena: los datos, el responsable y la finalidad tienen que ser los tuyos.
-      </p>
+    <h1 class="tipo-display mt-10 text-5xl leading-[0.9] font-bold uppercase sm:text-7xl">
+      Política de <span class="marca px-1">privacidad</span>
+    </h1>
+    <p class="mt-6 text-sm leading-relaxed text-muted">
+      Texto de ejemplo para esta página. No copies una política ajena: los datos, el responsable y la finalidad tienen que ser los tuyos.
+    </p>
 
-      <div className="mt-10 divide-y divide-line border-y border-line">
-        {bloques.map((bloque) => (
-          <section className="py-6" key={bloque.titulo}>
-            <h2 className="tipo-display text-2xl uppercase">{bloque.titulo}</h2>
-            <p className="mt-3 text-sm leading-relaxed">{bloque.texto}</p>
+    <div class="mt-10 divide-y divide-line border-y border-line">
+      {
+        bloques.map((bloque) => (
+          <section class="py-6">
+            <h2 class="tipo-display text-2xl uppercase">{bloque.titulo}</h2>
+            <p class="mt-3 text-sm leading-relaxed">{bloque.texto}</p>
           </section>
-        ))}
-      </div>
-    </main>
-  );
-}
+        ))
+      }
+    </div>
+  </main>
+</Base>

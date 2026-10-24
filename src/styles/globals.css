@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
 :root {
+  --font-display-face: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --font-mono-face: "Geist Mono", ui-monospace, monospace;
   --ink: oklch(0.16 0.005 60);
   --cream: oklch(0.965 0.008 85);
   --yellow: oklch(0.78 0.14 92);

@@ -1,7 +1,7 @@
-import { Carta } from "@/components/Carta";
-import { RegistroForm } from "@/components/RegistroForm";
+import { Carta } from "./Carta";
+import { RegistroForm } from "./RegistroForm";
 
-export default function Home() {
+export function Pagina() {
   return (
     <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-6 py-8 sm:px-10 lg:px-14">
       <div className="grid flex-1 items-start gap-y-0 py-6 lg:grid-cols-12 lg:gap-x-8 lg:py-10">
@@ -20,7 +20,6 @@ export default function Home() {
 
         <RegistroForm />
       </div>
-
     </main>
   );
 }

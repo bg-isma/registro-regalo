@@ -1,7 +1,4 @@
-"use client";
-
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
@@ -66,7 +63,8 @@ const boton =
 
 const enColumna = "order-3 lg:col-span-7 lg:col-start-1";
 
-const SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+const SITE_KEY = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
+const base = import.meta.env.BASE_URL;
 
 const TIPOS = [
   { id: "Oficio", texto: "Afilar un cuchillo, coser una tela, encender un horno." },
@@ -239,7 +237,7 @@ export function RegistroForm() {
   useEffect(() => {
     const token = new URLSearchParams(window.location.search).get("t") || "";
     if (!/^[0-9a-f-]{36}$/i.test(token)) return;
-    const endpoint = process.env.NEXT_PUBLIC_REGISTRO_URL;
+    const endpoint = import.meta.env.PUBLIC_REGISTRO_URL;
     if (!endpoint) {
       setTono("error");
       setAviso(textos.missing);
@@ -316,7 +314,7 @@ export function RegistroForm() {
   }
 
   async function post(body: Record<string, unknown>) {
-    const endpoint = process.env.NEXT_PUBLIC_REGISTRO_URL;
+    const endpoint = import.meta.env.PUBLIC_REGISTRO_URL;
     if (!endpoint) {
       mostrar("missing", "error");
       return null;
@@ -647,7 +645,7 @@ export function RegistroForm() {
         <label className="flex items-start gap-3 text-sm leading-relaxed text-ink lg:col-span-7">
           <input className="mt-1 size-4 shrink-0 accent-ink" name="acepta" type="checkbox" required />
           <span>
-            He leído la <Link className="underline" href="/privacidad">política de privacidad</Link> y acepto recibir el código en este email y el conocimiento en esta dirección.
+            He leído la <a className="underline" href={`${base}privacidad/`}>política de privacidad</a> y acepto recibir el código en este email y el conocimiento en esta dirección.
           </span>
         </label>
 
