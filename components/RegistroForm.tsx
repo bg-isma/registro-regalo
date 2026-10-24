@@ -14,6 +14,7 @@ type Codigo =
   | "code"
   | "expired"
   | "wait"
+  | "soon"
   | "quota"
   | "sent";
 
@@ -49,6 +50,7 @@ const textos: Record<Codigo, string> = {
   code: "El código no coincide.",
   expired: "El código ha caducado. Pide otro.",
   wait: "Espera un minuto antes de pedir otro código.",
+  soon: "Espera un momento y vuelve a enviar el formulario.",
   quota: "Hoy no podemos enviar más códigos. Inténtalo mañana.",
   error: "No se ha podido completar. Inténtalo otra vez.",
   missing: "Falta la URL de Google en .env.local.",
@@ -96,6 +98,7 @@ export function RegistroForm() {
   const caja = useRef<HTMLDivElement>(null);
   const widget = useRef<number | null>(null);
   const formulario = useRef<HTMLFormElement>(null);
+  const abierto = useRef(Date.now());
   const listo = campos && tipo !== "" && acepta;
 
   function revisar(form: HTMLFormElement) {
@@ -181,6 +184,7 @@ export function RegistroForm() {
       code === "code" ||
       code === "expired" ||
       code === "wait" ||
+      code === "soon" ||
       code === "quota" ||
       code === "error"
     ) {
@@ -213,6 +217,12 @@ export function RegistroForm() {
       mostrar("captcha", "error");
       return;
     }
+    if (String(data.get("comentarios_extra") || "").trim()) {
+      setEmail(String(data.get("email") || "").trim().toLowerCase());
+      setPaso("codigo");
+      mostrar("sent", "info");
+      return;
+    }
 
     setEnviando(true);
     setAviso("");
@@ -228,6 +238,8 @@ export function RegistroForm() {
         email: correo,
         acepta: data.get("acepta") === "on",
         captcha,
+        comentarios_extra: String(data.get("comentarios_extra") || ""),
+        transcurrido: Date.now() - abierto.current,
       });
       if (!parsed) return;
       if (parsed.ok && parsed.pending) {
@@ -335,6 +347,12 @@ export function RegistroForm() {
         onSubmit={onSolicitar}
       >
       <fieldset className={`${enColumna} mt-5`}>
+        <p className="trampa" aria-hidden="true">
+          <label>
+            Comentarios extra
+            <input name="comentarios_extra" type="text" tabIndex={-1} autoComplete="off" defaultValue="" />
+          </label>
+        </p>
         <legend className="mb-3 text-[0.72rem] uppercase tracking-[0.18em] text-muted">
           Elige un conocimiento
         </legend>
