@@ -1,4 +1,5 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { emailTemporal } from "../dominios-temporales";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
@@ -231,7 +232,9 @@ export function RegistroForm() {
             ? "No uses un + en el email."
             : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)
               ? "Escribe un email válido, con @ y dominio."
-              : "",
+              : emailTemporal(correo)
+                ? "Ese email es temporal. Usa uno permanente."
+                : "",
       cp: cp.length > 0 && !/^\d{5}$/.test(cp) ? "El código postal son 5 números." : "",
       telefono:
         telefono.length > 0 && !telefonoValido(telefono) ? "Escribe un teléfono de 9 números." : "",
@@ -355,9 +358,15 @@ export function RegistroForm() {
     event.preventDefault();
     const form = event.currentTarget;
     const data = new FormData(form);
-    if (String(data.get("email") || "").includes("+")) {
+    const correo = String(data.get("email") || "");
+    if (correo.includes("+")) {
       setTono("error");
       setAviso("No uses un + en el email.");
+      return;
+    }
+    if (emailTemporal(correo)) {
+      setTono("error");
+      setAviso("Ese email es temporal. Usa uno permanente.");
       return;
     }
     if (!tipo) {
