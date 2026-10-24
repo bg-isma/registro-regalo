@@ -70,6 +70,11 @@ const TIPOS = [
   { id: "Mirada", texto: "Una carta para leer un lugar al llegar." },
 ];
 
+function casillaMarcada(form: HTMLFormElement) {
+  const casilla = form.elements.namedItem("acepta");
+  return casilla instanceof HTMLInputElement && casilla.checked;
+}
+
 function camposRellenos(form: HTMLFormElement) {
   const data = new FormData(form);
   return ["nombre", "calle", "codigoPostal", "provincia", "email"].every(
@@ -85,12 +90,13 @@ export function RegistroForm() {
   const [email, setEmail] = useState("");
   const [captcha, setCaptcha] = useState("");
   const [tipo, setTipo] = useState("");
+  const [acepta, setAcepta] = useState(false);
   const [campos, setCampos] = useState(false);
   const [errores, setErrores] = useState({ nombre: "", provincia: "", email: "", cp: "" });
   const caja = useRef<HTMLDivElement>(null);
   const widget = useRef<number | null>(null);
   const formulario = useRef<HTMLFormElement>(null);
-  const listo = campos && tipo !== "";
+  const listo = campos && tipo !== "" && acepta;
 
   function revisar(form: HTMLFormElement) {
     const data = new FormData(form);
@@ -99,6 +105,7 @@ export function RegistroForm() {
     const correo = String(data.get("email") || "").trim();
     const cp = String(data.get("codigoPostal") || "").trim();
     setCampos(camposRellenos(form));
+    setAcepta(casillaMarcada(form));
     setErrores({
       nombre:
         nombre.length > 0 && (nombre.length < 5 || !nombre.includes(" "))
@@ -192,6 +199,11 @@ export function RegistroForm() {
       setAviso("Elige un conocimiento.");
       return;
     }
+    if (!casillaMarcada(form)) {
+      setTono("error");
+      setAviso("Acepta la política de privacidad para enviar el formulario.");
+      return;
+    }
     if (!SITE_KEY) {
       setTono("error");
       setAviso("Falta la clave de sitio de reCAPTCHA. Pégala en .env.local.");
@@ -251,6 +263,7 @@ export function RegistroForm() {
       if (parsed.ok) {
         formulario.current?.reset();
         setTipo("");
+        setAcepta(false);
         setCampos(false);
         setErrores({ nombre: "", provincia: "", email: "", cp: "" });
         setCaptcha("");
