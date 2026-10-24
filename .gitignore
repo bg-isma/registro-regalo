@@ -41,6 +41,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# se queda en local: el script de la hoja y las notas del agente
+# se queda en local: el script de la hoja, las notas del agente y las reglas
 /google-apps-script/
 /AGENTS.md
+/.cursor/
