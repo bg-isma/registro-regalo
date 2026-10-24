@@ -423,17 +423,21 @@ export function RegistroForm() {
         {errores.email ? <p className="mt-2 text-xs leading-relaxed text-orange">{errores.email}</p> : null}
       </label>
 
-      <div className="order-3 mt-5 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between lg:col-span-12 lg:col-start-1">
-        <label className="flex max-w-sm items-start gap-3 text-sm leading-relaxed text-ink">
+      <div className="order-3 mt-5 grid grid-cols-1 gap-4 lg:col-span-12 lg:col-start-1 lg:grid-cols-12 lg:items-center lg:gap-x-8">
+        <label className="flex items-start gap-3 text-sm leading-relaxed text-ink lg:col-span-7">
           <input className="mt-1 size-4 shrink-0 accent-ink" name="acepta" type="checkbox" required />
           <span>
             He leído la <Link className="underline" href="/privacidad">política de privacidad</Link> y acepto recibir el código en este email y el conocimiento en esta dirección.
           </span>
         </label>
 
-        {listo && SITE_KEY ? <div className="min-h-[78px] shrink-0 self-end sm:self-center" ref={caja} /> : null}
+        {listo && SITE_KEY ? (
+          <div className="flex justify-center lg:col-span-5 lg:justify-end">
+            <div className="min-h-[78px]" ref={caja} />
+          </div>
+        ) : null}
         {listo && !SITE_KEY ? (
-          <p className="max-w-xs text-sm leading-relaxed text-orange sm:text-right">
+          <p className="text-center text-sm leading-relaxed text-orange lg:col-span-5 lg:text-right">
             Falta la clave de sitio de reCAPTCHA. Pégala en .env.local.
           </p>
         ) : null}
